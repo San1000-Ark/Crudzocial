@@ -28,9 +28,9 @@ Puedes ver el proyecto desplegado en **GitHub Pages** aquí:
 
 ## 🚀 Instrucciones de uso
 
-1. Clonar este repositorio:
-   ```bash
-   git clone [URL-del-repositorio]
+
+1. Descarga o clona este repositorio.
+👉 [Clona](https://github.com/San1000-Ark/Crudy.git)
 
 2. Extraer los archivos del proyecto.
    
