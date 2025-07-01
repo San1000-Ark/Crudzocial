@@ -1,4 +1,4 @@
-# 📱 CRUD Social
+# 📱 Crudzocial
 
 Proyecto colaborativo desarrollado como ejercicio de gestión de datos y operaciones CRUD en un entorno web.
 
