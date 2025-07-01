@@ -23,13 +23,13 @@ Este proyecto permite realizar operaciones básicas de **Crear, Leer, Actualizar
 
 Puedes ver el proyecto desplegado en **GitHub Pages** aquí:
 
-👉 [Ver Demo](https://san1000-ark.github.io/Crudy/)
+👉 [Ver Demo](https://san1000-ark.github.io/Crudzocial/)
 
 ## 🚀 Instrucciones de uso
 
 
-1. Descarga o clona este repositorio.
-👉 [Clona](https://github.com/San1000-Ark/Crudy.git)
+1. Clona este repositorio.
+👉 [Clona](https://github.com/San1000-Ark/Crudzocial.git)
 
 2. Extraer los archivos del proyecto.
    
