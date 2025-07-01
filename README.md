@@ -11,7 +11,6 @@ Este proyecto permite realizar operaciones básicas de **Crear, Leer, Actualizar
 - HTML5
 - CSS3
 - JavaScript
-- [Aquí puedes añadir más si aplica: PHP, JSON, Base de Datos, etc.]
 
 ## 👥 Integrantes del equipo
 
