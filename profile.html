@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Crudzocial</title>
+    <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="/.css/custom.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-users me-2"></i>Crudzocial
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="index.html">
+                    <i class="fas fa-home me-1"></i>Home
+                </a>
+                <a class="nav-link" href="images.html">
+                    <i class="fas fa-images me-1"></i>Images
+                </a>
+                <a class="nav-link" href="notes.html">
+                    <i class="fas fa-sticky-note me-1"></i>Notes
+                </a>
+                <a class="nav-link" id="adminNavLink" href="users.html" style="display: none;">
+                    <i class="fas fa-users-cog me-1"></i>Admin
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-user me-2"></i>Profile Information</h2>
+                    </div>
+                    <div class="card-body">
+                        <div id="alertContainer"></div>
+                        
+                        <form id="profileForm">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="firstName" class="form-label">First Name</label>
+                                    <input type="text" class="form-control" id="firstName" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="lastName" class="form-label">Last Name</label>
+                                    <input type="text" class="form-control" id="lastName" required>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email Address</label>
+                                <input type="email" class="form-control" id="email" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="phone" class="form-label">Phone Number</label>
+                                <input type="tel" class="form-control" id="phone">
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="country" class="form-label">Country</label>
+                                    <input type="text" class="form-control" id="country">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="city" class="form-label">City</label>
+                                    <input type="text" class="form-control" id="city">
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="address" class="form-label">Address</label>
+                                <input type="text" class="form-control" id="address">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="zipCode" class="form-label">Zip Code</label>
+                                <input type="text" class="form-control" id="zipCode">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Role</label>
+                                <input type="text" class="form-control" id="role" readonly>
+                            </div>
+                            
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-2"></i>Update Profile
+                                </button>
+                                <button type="button" class="btn btn-outline-danger" id="logoutBtn">
+                                    <i class="fas fa-sign-out-alt me-2"></i>Logout
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-chart-line me-2"></i>Activity Summary</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="activitySummary">
+                            <!-- Activity stats will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h5><i class="fas fa-history me-2"></i>Recent Activity</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="recentActivity">
+                            <!-- Recent activity will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/profile.js"></script>
+    <script>
+        let currentUser = null;
+        
+        // Auto-executable function for initialization
+        (function() {
+            // Initialize storage and check session
+            initializeStorage();
+            currentUser = getCurrentUser();
+            
+            if (!currentUser) {
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            // Show admin nav link if user is admin
+            if (currentUser.role === 'admin') {
+                document.getElementById('adminNavLink').style.display = 'block';
+            }
+            
+            // Load profile data
+            loadProfile();
+            loadActivitySummary();
+            loadRecentActivity();
+        })();
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const profileForm = document.getElementById('profileForm');
+            const logoutBtn = document.getElementById('logoutBtn');
+            
+            profileForm.addEventListener('submit', handleProfileUpdate);
+            logoutBtn.addEventListener('click', handleLogout);
+        });
+
+        function loadProfile() {
+            if (!currentUser) return;
+            
+            document.getElementById('firstName').value = currentUser.firstName || '';
+            document.getElementById('lastName').value = currentUser.lastName || '';
+            document.getElementById('email').value = currentUser.email || '';
+            document.getElementById('phone').value = currentUser.phone || '';
+            document.getElementById('country').value = currentUser.country || '';
+            document.getElementById('city').value = currentUser.city || '';
+            document.getElementById('address').value = currentUser.address || '';
+            document.getElementById('zipCode').value = currentUser.zipCode || '';
+            document.getElementById('role').value = currentUser.role || '';
+        }
+
+        function handleProfileUpdate(e) {
+            e.preventDefault();
+            
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName = document.getElementById('lastName').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const country = document.getElementById('country').value.trim();
+            const city = document.getElementById('city').value.trim();
+            const address = document.getElementById('address').value.trim();
+            const zipCode = document.getElementById('zipCode').value.trim();
+            
+            if (!firstName || !lastName || !email) {
+                showAlert('Please fill in all required fields.', 'danger');
+                return;
+            }
+            
+            if (!isValidEmail(email)) {
+                showAlert('Please enter a valid email address.', 'danger');
+                return;
+            }
+            
+            // Check if email is already taken by another user
+            const existingUser = getUserByEmail(email);
+            if (existingUser && existingUser.id !== currentUser.id) {
+                showAlert('This email address is already taken by another user.', 'danger');
+                return;
+            }
+            
+            const updatedUser = {
+                ...currentUser,
+                firstName,
+                lastName,
+                email,
+                phone,
+                country,
+                city,
+                address,
+                zipCode,
+                updatedAt: new Date().toISOString()
+            };
+            
+            updateUser(updatedUser);
+            setCurrentUser(updatedUser);
+            currentUser = updatedUser;
+            
+            addLog(currentUser.id, 'update_profile', 'Updated profile information');
+            
+            showAlert('Profile updated successfully!', 'success');
+            
+            // Refresh activity summary
+            loadActivitySummary();
+            loadRecentActivity();
+        }
+
+        function handleLogout() {
+            if (confirm('Are you sure you want to logout?')) {
+                addLog(currentUser.id, 'logout', 'User logged out');
+                logout();
+                window.location.href = 'index.html';
+            }
+        }
+
+        function loadActivitySummary() {
+            if (!currentUser) return;
+            
+            const logs = getUserLogs(currentUser.id);
+            const images = getUserImages(currentUser.id);
+            const notes = getUserNotes(currentUser.id);
+            
+            const activitySummary = document.getElementById('activitySummary');
+            activitySummary.innerHTML = `
+                <div class="row text-center">
+                    <div class="col-4">
+                        <div class="mb-2">
+                            <i class="fas fa-images fa-2x text-primary"></i>
+                        </div>
+                        <h4 class="mb-1">${images.length}</h4>
+                        <small class="text-muted">Images</small>
+                    </div>
+                    <div class="col-4">
+                        <div class="mb-2">
+                            <i class="fas fa-sticky-note fa-2x text-warning"></i>
+                        </div>
+                        <h4 class="mb-1">${notes.length}</h4>
+                        <small class="text-muted">Notes</small>
+                    </div>
+                    <div class="col-4">
+                        <div class="mb-2">
+                            <i class="fas fa-history fa-2x text-info"></i>
+                        </div>
+                        <h4 class="mb-1">${logs.length}</h4>
+                        <small class="text-muted">Activities</small>
+                    </div>
+                </div>
+                <hr>
+                <div class="text-center">
+                    <small class="text-muted">
+                        Member since ${formatDate(currentUser.createdAt)}
+                    </small>
+                </div>
+            `;
+        }
+
+        function loadRecentActivity() {
+            if (!currentUser) return;
+            
+            const logs = getUserLogs(currentUser.id);
+            const recentLogs = logs.slice(-5).reverse(); // Get last 5 logs
+            
+            const recentActivity = document.getElementById('recentActivity');
+            
+            if (recentLogs.length === 0) {
+                recentActivity.innerHTML = '<p class="text-muted">No recent activity</p>';
+                return;
+            }
+            
+            let html = '';
+            recentLogs.forEach(log => {
+                const icon = getActionIcon(log.action);
+                html += `
+                    <div class="d-flex align-items-start mb-3">
+                        <div class="me-3">
+                            <i class="fas ${icon} text-muted"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="fw-bold">${log.description}</div>
+                            <small class="text-muted">${formatDate(log.timestamp)}</small>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            recentActivity.innerHTML = html;
+        }
+
+        function getActionIcon(action) {
+            const icons = {
+                'login': 'fa-sign-in-alt',
+                'logout': 'fa-sign-out-alt',
+                'register': 'fa-user-plus',
+                'update_profile': 'fa-user-edit',
+                'create_image': 'fa-image',
+                'update_image': 'fa-edit',
+                'delete_image': 'fa-trash',
+                'create_note': 'fa-sticky-note',
+                'update_note': 'fa-edit',
+                'delete_note': 'fa-trash'
+            };
+            return icons[action] || 'fa-circle';
+        }
+
+        function showAlert(message, type) {
+            const alertContainer = document.getElementById('alertContainer');
+            alertContainer.innerHTML = `
+                <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+            
+            setTimeout(() => {
+                alertContainer.innerHTML = '';
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

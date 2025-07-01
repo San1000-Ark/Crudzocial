@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Crudzocial</title>
+    <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="/.css/custom.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-users me-2"></i>Crudzocial
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="index.html">
+                    <i class="fas fa-home me-1"></i>Home
+                </a>
+                <a class="nav-link" href="images.html">
+                    <i class="fas fa-images me-1"></i>Images
+                </a>
+                <a class="nav-link" href="notes.html">
+                    <i class="fas fa-sticky-note me-1"></i>Notes
+                </a>
+                <a class="nav-link" href="profile.html">
+                    <i class="fas fa-user me-1"></i>Profile
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1><i class="fas fa-users-cog me-2"></i>Admin Panel</h1>
+                    <span class="badge bg-warning">Administrator</span>
+                </div>
+                
+                <div id="alertContainer"></div>
+                
+                <!-- Tabs -->
+                <ul class="nav nav-tabs" id="adminTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="users-tab" data-bs-toggle="tab" data-bs-target="#users" type="button" role="tab">
+                            <i class="fas fa-users me-2"></i>Users
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="content-tab" data-bs-toggle="tab" data-bs-target="#content" type="button" role="tab">
+                            <i class="fas fa-folder me-2"></i>Content
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="logs-tab" data-bs-toggle="tab" data-bs-target="#logs" type="button" role="tab">
+                            <i class="fas fa-history me-2"></i>Activity Logs
+                        </button>
+                    </li>
+                </ul>
+                
+                <!-- Tab Content -->
+                <div class="tab-content" id="adminTabContent">
+                    <!-- Users Tab -->
+                    <div class="tab-pane fade show active" id="users" role="tabpanel">
+                        <div class="card mt-3">
+                            <div class="card-header">
+                                <h5><i class="fas fa-users me-2"></i>All Users</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Email</th>
+                                                <th>Role</th>
+                                                <th>Registered</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="usersTableBody">
+                                            <!-- Users will be loaded here -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Content Tab -->
+                    <div class="tab-pane fade" id="content" role="tabpanel">
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5><i class="fas fa-images me-2"></i>Images</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="adminImagesContainer">
+                                            <!-- Images will be loaded here -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5><i class="fas fa-sticky-note me-2"></i>Notes</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="adminNotesContainer">
+                                            <!-- Notes will be loaded here -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Logs Tab -->
+                    <div class="tab-pane fade" id="logs" role="tabpanel">
+                        <div class="card mt-3">
+                            <div class="card-header">
+                                <h5><i class="fas fa-history me-2"></i>System Activity Logs</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>User</th>
+                                                <th>Action</th>
+                                                <th>Description</th>
+                                                <th>Timestamp</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="logsTableBody">
+                                            <!-- Logs will be loaded here -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Details Modal -->
+    <div class="modal fade" id="userDetailsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">User Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="userDetailsContent">
+                    <!-- User details will be loaded here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/users.js"></script>
+    <script>
+        let currentUser = null;
+        
+        // Auto-executable function for initialization
+        (function() {
+            // Initialize storage and check session
+            initializeStorage();
+            currentUser = getCurrentUser();
+            
+            if (!currentUser) {
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            // Check if user is admin
+            if (currentUser.role !== 'admin') {
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            // Load initial data
+            loadUsers();
+            loadContent();
+            loadLogs();
+        })();
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Tab change listeners
+            const tabs = document.querySelectorAll('[data-bs-toggle="tab"]');
+            tabs.forEach(tab => {
+                tab.addEventListener('shown.bs.tab', function(e) {
+                    const target = e.target.getAttribute('data-bs-target');
+                    if (target === '#users') loadUsers();
+                    else if (target === '#content') loadContent();
+                    else if (target === '#logs') loadLogs();
+                });
+            });
+        });
+
+        function loadUsers() {
+            const users = getAllUsers();
+            const tableBody = document.getElementById('usersTableBody');
+            
+            let html = '';
+            users.forEach(user => {
+                html += `
+                    <tr>
+                        <td>${user.firstName} ${user.lastName}</td>
+                        <td>${user.email}</td>
+                        <td>
+                            <span class="badge ${user.role === 'admin' ? 'bg-warning' : 'bg-secondary'}">
+                                ${user.role}
+                            </span>
+                        </td>
+                        <td>${formatDate(user.createdAt)}</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary" onclick="viewUserDetails('${user.id}')">
+                                <i class="fas fa-eye"></i> View
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            tableBody.innerHTML = html;
+        }
+
+        function loadContent() {
+            loadAdminImages();
+            loadAdminNotes();
+        }
+
+        function loadAdminImages() {
+            const images = getAllImages();
+            const container = document.getElementById('adminImagesContainer');
+            
+            if (images.length === 0) {
+                container.innerHTML = '<p class="text-muted">No images found</p>';
+                return;
+            }
+            
+            let html = '';
+            images.slice(0, 5).forEach(image => {
+                const user = getUserById(image.userId);
+                html += `
+                    <div class="d-flex align-items-center mb-3 p-2 border rounded">
+                        <img src="${image.url}" alt="${image.title}" class="me-3" 
+                             style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;"
+                             onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0yMCAxMkMxOC45IDEyIDE4IDEyLjkgMTggMTRDMTggMTUuMSAxOC45IDE2IDIwIDE2QzIxLjEgMTYgMjIgMTUuMSAyMiAxNEMyMiAxMi45IDIxLjEgMTIgMjAgMTJaIiBmaWxsPSIjOUI5QjlCIi8+CjxwYXRoIGQ9Ik0yOCAyMkgyMEwxNiAyOEgyOFYyMloiIGZpbGw9IiM5QjlCOUIiLz4KPC9zdmc+Cg=='">
+                        <div class="flex-grow-1">
+                            <div class="fw-bold">${image.title}</div>
+                            <small class="text-muted">By: ${user ? user.firstName + ' ' + user.lastName : 'Unknown'}</small>
+                        </div>
+                        <button class="btn btn-sm btn-outline-danger" onclick="adminDeleteImage('${image.id}')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+            });
+            
+            if (images.length > 5) {
+                html += `
+                    <div class="text-center mt-3">
+                        <a href="images.html" class="btn btn-outline-primary btn-sm">
+                            View All ${images.length} Images
+                        </a>
+                    </div>
+                `;
+            }
+            
+            container.innerHTML = html;
+        }
+
+        function loadAdminNotes() {
+            const notes = getAllNotes();
+            const container = document.getElementById('adminNotesContainer');
+            
+            if (notes.length === 0) {
+                container.innerHTML = '<p class="text-muted">No notes found</p>';
+                return;
+            }
+            
+            let html = '';
+            notes.slice(0, 5).forEach(note => {
+                const user = getUserById(note.userId);
+                html += `
+                    <div class="d-flex align-items-center mb-3 p-2 border rounded">
+                        <div class="me-3">
+                            <i class="fas fa-sticky-note fa-2x text-warning"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="fw-bold">${note.title}</div>
+                            <small class="text-muted">By: ${user ? user.firstName + ' ' + user.lastName : 'Unknown'}</small>
+                        </div>
+                        <button class="btn btn-sm btn-outline-danger" onclick="adminDeleteNote('${note.id}')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+            });
+            
+            if (notes.length > 5) {
+                html += `
+                    <div class="text-center mt-3">
+                        <a href="notes.html" class="btn btn-outline-primary btn-sm">
+                            View All ${notes.length} Notes
+                        </a>
+                    </div>
+                `;
+            }
+            
+            container.innerHTML = html;
+        }
+
+        function loadLogs() {
+            const logs = getAllLogs();
+            const tableBody = document.getElementById('logsTableBody');
+            
+            // Sort logs by timestamp (newest first)
+            logs.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            
+            let html = '';
+            logs.forEach(log => {
+                const user = getUserById(log.userId);
+                html += `
+                    <tr>
+                        <td>${user ? user.firstName + ' ' + user.lastName : 'Unknown User'}</td>
+                        <td>
+                            <span class="badge bg-info">${log.action}</span>
+                        </td>
+                        <td>${log.description}</td>
+                        <td>${formatDate(log.timestamp)}</td>
+                    </tr>
+                `;
+            });
+            
+            if (html === '') {
+                html = '<tr><td colspan="4" class="text-center text-muted">No logs found</td></tr>';
+            }
+            
+            tableBody.innerHTML = html;
+        }
+
+        function viewUserDetails(userId) {
+            const user = getUserById(userId);
+            if (!user) return;
+            
+            const userImages = getUserImages(userId);
+            const userNotes = getUserNotes(userId);
+            const userLogs = getUserLogs(userId);
+            
+            const content = document.getElementById('userDetailsContent');
+            content.innerHTML = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Personal Information</h6>
+                        <table class="table table-sm">
+                            <tr><td><strong>Name:</strong></td><td>${user.firstName} ${user.lastName}</td></tr>
+                            <tr><td><strong>Email:</strong></td><td>${user.email}</td></tr>
+                            <tr><td><strong>Phone:</strong></td><td>${user.phone || 'Not provided'}</td></tr>
+                            <tr><td><strong>Country:</strong></td><td>${user.country || 'Not provided'}</td></tr>
+                            <tr><td><strong>City:</strong></td><td>${user.city || 'Not provided'}</td></tr>
+                            <tr><td><strong>Address:</strong></td><td>${user.address || 'Not provided'}</td></tr>
+                            <tr><td><strong>Zip Code:</strong></td><td>${user.zipCode || 'Not provided'}</td></tr>
+                            <tr><td><strong>Role:</strong></td><td><span class="badge ${user.role === 'admin' ? 'bg-warning' : 'bg-secondary'}">${user.role}</span></td></tr>
+                            <tr><td><strong>Registered:</strong></td><td>${formatDate(user.createdAt)}</td></tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Activity Summary</h6>
+                        <div class="row text-center mb-3">
+                            <div class="col-4">
+                                <div class="text-primary">
+                                    <i class="fas fa-images fa-2x"></i>
+                                    <div>${userImages.length}</div>
+                                    <small>Images</small>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="text-warning">
+                                    <i class="fas fa-sticky-note fa-2x"></i>
+                                    <div>${userNotes.length}</div>
+                                    <small>Notes</small>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="text-info">
+                                    <i class="fas fa-history fa-2x"></i>
+                                    <div>${userLogs.length}</div>
+                                    <small>Activities</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h6>Recent Activity</h6>
+                        <div style="max-height: 200px; overflow-y: auto;">
+                            ${userLogs.slice(-5).reverse().map(log => `
+                                <div class="small mb-2">
+                                    <div class="fw-bold">${log.description}</div>
+                                    <div class="text-muted">${formatDate(log.timestamp)}</div>
+                                </div>
+                            `).join('') || '<p class="text-muted">No activity found</p>'}
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            const modal = new bootstrap.Modal(document.getElementById('userDetailsModal'));
+            modal.show();
+        }
+
+        function adminDeleteImage(imageId) {
+            if (!confirm('Are you sure you want to delete this image?')) return;
+            
+            const image = getImageById(imageId);
+            if (!image) return;
+            
+            removeImage(imageId);
+            addLog(currentUser.id, 'admin_delete_image', `Admin deleted image: ${image.title}`);
+            
+            loadAdminImages();
+            showAlert('Image deleted successfully!', 'success');
+        }
+
+        function adminDeleteNote(noteId) {
+            if (!confirm('Are you sure you want to delete this note?')) return;
+            
+            const note = getNoteById(noteId);
+            if (!note) return;
+            
+            removeNote(noteId);
+            addLog(currentUser.id, 'admin_delete_note', `Admin deleted note: ${note.title}`);
+            
+            loadAdminNotes();
+            showAlert('Note deleted successfully!', 'success');
+        }
+
+        function showAlert(message, type) {
+            const alertContainer = document.getElementById('alertContainer');
+            alertContainer.innerHTML = `
+                <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+            
+            setTimeout(() => {
+                alertContainer.innerHTML = '';
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
